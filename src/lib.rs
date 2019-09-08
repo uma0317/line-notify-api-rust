@@ -1,4 +1,5 @@
 extern crate reqwest;
+extern crate url;
 
 mod client;
 mod error;

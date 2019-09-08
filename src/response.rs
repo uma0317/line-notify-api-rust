@@ -8,6 +8,10 @@ impl Response {
 	pub fn new(content: reqwest::Response) -> Response {
 		Response { content }
 	}
+
+	pub fn content(self) -> reqwest::Response {
+		self.content
+	}
 }
 impl fmt::Debug for Response {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
