@@ -1,3 +1,4 @@
+extern crate actix_web;
 extern crate futures;
 extern crate reqwest;
 extern crate url;
@@ -10,4 +11,5 @@ mod response;
 
 pub use self::client::Client;
 pub use self::error::{Error, Result};
-pub use self::parameter::Parameter;pub use self::response::Response;
+pub use self::parameter::Parameter;
+pub use self::response::Response;
