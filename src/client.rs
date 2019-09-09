@@ -35,7 +35,6 @@ impl Client {
 		}
 	}
 
-	pub fn notify_url()
 
 	// pub fn notify_with_param(self, param: NotifyParam) -> Result<Response> {
 	// }
@@ -132,7 +131,4 @@ impl Client {
 		)
 	}
 }
-
-use actix_rt::System;
-use awc::Client;
 
