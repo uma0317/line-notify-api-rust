@@ -1,20 +1,20 @@
 use std::fmt;
 
 pub struct Response {
-	content: reqwest::Response,
+    content: reqwest::Response,
 }
 
 impl Response {
-	pub fn new(content: reqwest::Response) -> Response {
-		Response { content }
-	}
+    pub fn new(content: reqwest::Response) -> Response {
+        Response { content }
+    }
 
-	pub fn content(self) -> reqwest::Response {
-		self.content
-	}
+    pub fn content(self) -> reqwest::Response {
+        self.content
+    }
 }
 impl fmt::Debug for Response {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		fmt::Debug::fmt(&self.content, f)
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(&self.content, f)
+    }
 }

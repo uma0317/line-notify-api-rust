@@ -1,7 +1,9 @@
+use crate::parameter::NotifyParam;
 use crate::Error;
 use crate::Response;
 use crate::Result;
-use url::Url;
+
+use futures::Future;
 
 pub struct Client {
 	token: String,
@@ -32,6 +34,9 @@ impl Client {
 			Err(e) => Err(Error::new(e)),
 		}
 	}
+
+	// pub fn notify_with_param(self, param: NotifyParam) -> Result<Response> {
+	// }
 
 	pub fn status(self) -> Result<Response> {
 		let res = reqwest::Client::new()
@@ -83,25 +88,45 @@ impl Client {
 		url
 	}
 
-	// pub fn token_url(self) -> String {
-
-	// }
-
-	pub fn token(self) -> Result<Response> {
-		let res = reqwest::Client::new()
-			.post("https://notify-bot.line.me/oauth/token")
-			.query(&[
-				("grant_type", "authorization_code"),
-				("code", "rRoyEC9jMj78YbAe2tmDB5"),
-				("redirect_uri", "http://localhost:8080/oauthpost"),
-				("client_id", &self.id),
-				("client_secret", &self.secret),
-			])
-			.send();
+	pub fn token(self, code: &str) -> Result<Response> {
+		let url = format!("https://notify-bot.line.me/oauth/token?grant_type=authorization_code&code={code}&redirect_uri={uri}&client_id={id}&client_secret={secret}", code=code, uri=&self.redirect_uri, id=&self.id, secret=&self.secret);
+		let res = reqwest::Client::new().post(&url).send();
+		// let res = reqwest::Client::new()
+		// 	.post("https://notify-bot.line.me/oauth/token")
+		// 	.query(&[
+		// 		("grant_type", "authorization_code"),
+		// 		("code", code),
+		// 		("redirect_uri", "http://localhost:8080/oauthpost"),
+		// 		("client_id", &self.id),
+		// 		("client_secret", &self.secret),
+		// 	])
+		// 	.send();
 
 		match res {
 			Ok(n) => Ok(Response::new(n)),
 			Err(e) => Err(Error::new(e)),
 		}
+	}
+
+	pub fn async_token(
+		self,
+		code: &str,
+	) -> Box<impl Future<Item = crate::r#async::Response, Error = Error>> {
+		let url = format!("https://notify-bot.line.me/oauth/token?grant_type=authorization_code&code={code}&redirect_uri={uri}&client_id={id}&client_secret={secret}", code=code, uri=&self.redirect_uri, id=&self.id, secret=&self.secret);
+
+		Box::new(
+			reqwest::r#async::Client::new()
+				.post(&url)
+				.send()
+				.and_then(move |res| {
+					println!("{:?}", res);
+					Ok(crate::r#async::Response::new(res))
+				})
+				// .and_then(move |res| Ok(crate::r#async::Response::new(res)))
+				.or_else(move |res| {
+					eprintln!("{}", res);
+					Err(Error::new(res))
+				}),
+		)
 	}
 }
